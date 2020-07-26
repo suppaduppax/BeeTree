@@ -51,6 +51,7 @@ namespace BeeTree.Editor {
 			DrawPanels();
 			DrawExtras ();
 			DrawBoxSelection();
+			DrawTitle();
 
 			GUILayout.EndArea ();
 			GUI.color = oldGuiColour;
@@ -90,6 +91,18 @@ namespace BeeTree.Editor {
 		//	}
 		//}
 
+		private void DrawTitle()
+		{
+			GUIStyle titleStyle = new GUIStyle();
+			titleStyle.fontSize = 36;
+			titleStyle.fontStyle = FontStyle.Bold;
+			titleStyle.normal.textColor = new Color(1, 1, 1, 0.15f);
+			
+			Rect titleRect = new Rect(5,5, 200, 80);
+			GUI.color = Color.white;
+			GUI.Label(titleRect, canvas.Title, titleStyle);
+		}
+		
 		void DrawPanels ()
         {
 
@@ -98,6 +111,8 @@ namespace BeeTree.Editor {
 				DrawNodePanel(canvas.canvasState.nodePanels[i]);
             }
         }
+		
+		
 		
 		void DrawExtras () {
 			//GUI.color = Color.white;
@@ -231,7 +246,7 @@ namespace BeeTree.Editor {
 				{
 					NodeConnection connection = panel.outHandle.Connections[j];
 
-					Handles.color = Color.white;
+					Handles.color = !Application.isPlaying ? Color.white : new Color(0.5f, 0.5f, 0.5f, 1.0f);
 					
 					if (Application.isPlaying)
 					{
@@ -255,7 +270,8 @@ namespace BeeTree.Editor {
 
 				if (runningConnection != null)
 				{
-					Handles.color = BehaviourEditorStyles.playMode_nodeRunningColour;
+					Handles.color = runningConnection.EndPanel.Node.State == Node.NodeState.Failure ?  
+						BehaviourEditorStyles.playMode_nodeFailureColour : BehaviourEditorStyles.playMode_nodeRunningColour;
 					
 					Vector2[] p = runningConnection.Points;
 					Vector3[] pointsVector3 = null;

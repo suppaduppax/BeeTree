@@ -82,6 +82,10 @@ namespace BeeTree.Editor
     {
         public CanvasState canvasState { get; protected set; }          // stores the panOffset and other state related things
 
+        public string Title { get; set; }
+
+        public Rect Rect => _canvasRect;
+        
         #region Canvas Input
 
         //public Vector2 mousePos { get; protected set; }                 // the current mouse position
@@ -204,6 +208,8 @@ namespace BeeTree.Editor
                 canvasState.tree = treeAsset;
             }
 
+            Title = treeAsset.name;
+            
             AssetDatabase.ImportAsset(AssetDatabase.GetAssetPath(canvasState));
         }
 
@@ -233,9 +239,7 @@ namespace BeeTree.Editor
                 return;
             }
             
-            Debug.Log(canvasState.RootNodePanel.Node.State);
-
-            Debug.Log(canvasState);
+            Title = treeAsset.name;
         }
         
         private CanvasState GetCanvasStateSubAsset (BehaviourTree treeAsset)
