@@ -59,6 +59,8 @@ namespace BeeTree.Editor
                 _curWindowSize = position.size;
                 OnResize();
             }
+            
+            OnResize();
 
             GUI.depth = 0;
             DrawMenu();

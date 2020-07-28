@@ -40,21 +40,30 @@ namespace BeeTree.Editor {
 		}
 
 		public void Draw () {
-			Color oldGuiColour = GUI.color;
-			GUI.skin = BehaviourEditorStyles.defaultSkin;
+			if (canvas.canvasState != null)
+			{
+				Color oldGuiColour = GUI.color;
+				GUI.skin = BehaviourEditorStyles.defaultSkin;
 
-			GUILayout.BeginArea(canvas.canvasState.canvasRect);
+				GUILayout.BeginArea(canvas.canvasState.canvasRect);
+				DrawBg ();
+				DrawPreviewConnection();
+				DrawConnections();
+				DrawPanels();
+				DrawExtras();
+				DrawBoxSelection();
+				DrawTitle();
 
-			DrawBg ();
-			DrawPreviewConnection();
-			DrawConnections();
-			DrawPanels();
-			DrawExtras ();
-			DrawBoxSelection();
-			DrawTitle();
+				GUILayout.EndArea ();
+				GUI.color = oldGuiColour;
+			}
+			else
+			{
+				GUILayout.BeginArea(canvas.Rect);
 
-			GUILayout.EndArea ();
-			GUI.color = oldGuiColour;
+				DrawEmptyCanvas();
+				GUILayout.EndArea();
+			}
 		}
 
 		private void DrawBoxSelection ()
@@ -125,6 +134,46 @@ namespace BeeTree.Editor {
 			//	CanvasUtility.ScreenToCanvasPosition(canvas.mousePos, canvas.canvasState).ToString()
 			//);
 		}
+		
+		public void DrawEmptyCanvas () {
+			if (Event.current.type == EventType.Repaint)
+			{ // Draw Background when Repainting
+				float width = BehaviourEditorStyles.background.width;
+				float height = BehaviourEditorStyles.background.height;
+
+				// Vector2 offset = canvas.canvasState.zoomPos + canvas.canvasState.panOffset / canvas.canvasState.zoom;
+				// offset = new Vector2 (offset.x % width - width, offset.y % height - height);
+
+				int tileX = Mathf.CeilToInt ((canvas.Rect.width + width) / width);
+				int tileY = Mathf.CeilToInt ((canvas.Rect.height + height) / height);
+
+
+				for (int x = 0; x < tileX; x++) 
+				{
+					for (int y = 0; y < tileY; y++)
+					{
+						Rect bgSectionRect = new Rect(x * width,
+							y * height, width, height);
+
+						GUI.DrawTexture (bgSectionRect, BehaviourEditorStyles.background);
+					}
+				}
+
+				
+				GUIStyle titleStyle = new GUIStyle();
+				titleStyle.fontSize = 36;
+				titleStyle.fontStyle = FontStyle.Bold;
+				titleStyle.alignment = TextAnchor.MiddleCenter;
+				titleStyle.normal.textColor = new Color(1, 1, 1, 1f);
+			
+				Rect titleRect = new Rect(5,5, 200, 80);
+				GUI.color = Color.white;
+				GUI.Label(canvas.Rect, "Select a Behaviour Tree or create one to begin", titleStyle);
+
+			}
+			
+			
+		}
 
 		public void DrawBg () {
 			if (Event.current.type == EventType.Repaint)
@@ -183,7 +232,7 @@ namespace BeeTree.Editor {
 
 			GUI.Box(rect, "");
 			int padding = -5;
-			int iconSize = 50;
+			int iconSize = 40;
 
 			// draw the icon
 			Color contentColour = panel.contentColour;
@@ -198,9 +247,9 @@ namespace BeeTree.Editor {
 			GUIStyle labelStyle = new GUIStyle();
 			labelStyle.alignment = TextAnchor.MiddleCenter;
 
-			RectOffset paddedLabelRect = new RectOffset (padding, padding, 0, 0);
+			RectOffset paddedLabelRect = new RectOffset (padding, padding, padding / 2, 0);
 			Rect labelRect = paddedLabelRect.Add (rect);
-			labelRect.height = 40;
+			labelRect.height = 20;
 
 			string label = BehaviourEditor.debugView ? panel.guid.ToString().Substring(panel.guid.ToString().Length - 3) : panel.label;
 

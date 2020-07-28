@@ -75,7 +75,7 @@ namespace BeeTree.Editor
             panelRect = rect;
             menuRect = new Rect(panelRect.x, panelRect.y, panelRect.width, 18);
 
-            int padding = 0;
+            int padding = 1;
             RectOffset paddingOffset = new RectOffset(padding, padding, ((int)menuRect.height) + padding, padding);
             contentRect = paddingOffset.Remove(panelRect);
         }
@@ -205,6 +205,7 @@ namespace BeeTree.Editor
 
             //			if (Event.current.type != EventType.MouseDown)
             //			{
+
             GUILayout.BeginArea(contentRect);
 
             switch (selectedMenu)
@@ -252,7 +253,10 @@ namespace BeeTree.Editor
             //			if (Event.current.type != EventType.Repaint || Event.current.type != EventType.Layout || Event.current.type != )
             //				return;
 
-            EditorGUILayout.LabelField(selectedNode.Id);
+            GUIStyle nodeTypeStyle = new GUIStyle(EditorStyles.label);
+            nodeTypeStyle.alignment = TextAnchor.UpperCenter;
+            nodeTypeStyle.fontStyle = FontStyle.Bold;
+            EditorGUILayout.LabelField(selectedNode.Id, nodeTypeStyle);
             DrawId();
 
             if (_fields != null)
@@ -262,7 +266,7 @@ namespace BeeTree.Editor
                 {
 
                     EditorGUILayout.Separator();
-                    EditorGUILayout.BeginVertical(EditorStyles.textArea);
+                    EditorGUILayout.BeginVertical();
 
                     FieldInfo field = _fields[i];
                     string fieldName = field.Name;
@@ -310,9 +314,18 @@ namespace BeeTree.Editor
                         VariableSetter setterAttr = (VariableSetter)nodeField;
                         DrawVariableDropdown(field, setterAttr);
                     }
-
+                    
                     EditorGUILayout.EndVertical();
                 }
+                
+                // EditorGUILayout.BeginVertical(EditorStyles.textArea);
+
+                
+                EditorGUILayout.Separator();
+                EditorGUILayout.LabelField("Comments");
+                GUIStyle commentStyle = new GUIStyle(EditorStyles.textArea);
+                commentStyle.fixedHeight = 100;
+                EditorGUILayout.TextArea("", commentStyle);
             }
 
             if (Application.isPlaying)
@@ -494,7 +507,7 @@ namespace BeeTree.Editor
             if (!renameable)
                 GUI.enabled = false;
 
-            EditorGUILayout.BeginVertical(EditorStyles.textArea);
+            EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Name");
             EditorGUI.BeginChangeCheck();
             string nodeId = EditorGUILayout.TextField(selectedNode.name);

@@ -142,8 +142,9 @@ namespace BeeTree.Editor
             if (canvasState != null)
             {
                 ProcessInput();
-                _canvasRenderer.Update();
             }
+            
+            _canvasRenderer.Update();
         }
 
         private void UpdateNodePanelsPlaymode()

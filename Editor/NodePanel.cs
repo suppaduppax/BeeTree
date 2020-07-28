@@ -34,9 +34,11 @@ namespace BeeTree.Editor {
 
 		public bool isVisible = true;
 
+		public string comments;
 
 		public string label { get { return Node.name; } }
 
+		
 
 		public Node Node {
 			get
